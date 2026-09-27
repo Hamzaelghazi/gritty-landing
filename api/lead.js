@@ -64,7 +64,11 @@ module.exports = async (req, res) => {
         res.status(400).json({ error: 'Invalid email' });
         return;
     }
-    if (step === '2' && (name.length < 2 || phone.length < 4)) {
+    if (step === '2' && company.length < 2) {
+        res.status(400).json({ error: 'Invalid company' });
+        return;
+    }
+    if (step === '3' && (name.length < 2 || phone.length < 4)) {
         res.status(400).json({ error: 'Invalid name or phone' });
         return;
     }
@@ -98,7 +102,9 @@ module.exports = async (req, res) => {
     const esc = (s) => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
     const row = (label, val) => val ? label + ' ' + esc(val) + '\n' : '';
 
-    const title = step === '2' ? '📦 <b>Lead — step 2 (details)</b>' : '🚀 <b>Lead — step 1</b>';
+    const title = step === '3' ? '📦 <b>Lead — step 3 (details)</b>'
+        : step === '2' ? '🏢 <b>Lead — step 2 (company)</b>'
+        : '🚀 <b>Lead — step 1 (email)</b>';
     const text =
         title + '\n\n' +
         row('👤 <b>Full name:</b>', name) +

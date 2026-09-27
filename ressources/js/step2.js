@@ -36,11 +36,9 @@
 
     const form = document.getElementById('step2-form');
     const fullname = document.getElementById('fullname');
-    const company = document.getElementById('company');
     const phone = document.getElementById('phone');
     const address = document.getElementById('address');
     const nameError = document.getElementById('name-error');
-    const companyError = document.getElementById('company-error');
     const phoneError = document.getElementById('phone-error');
     const addressError = document.getElementById('address-error');
     const imageError = document.getElementById('image-error');
@@ -59,9 +57,8 @@
     const setError = (input, el, msg) => { if (input) input.classList.toggle('invalid', !!msg); el.textContent = msg; };
     const loading = (on) => { submitBtn.classList.toggle('loading', on); submitBtn.disabled = on; };
 
-    const errFor = (inp) => inp === fullname ? nameError : inp === company ? companyError
-        : inp === phone ? phoneError : addressError;
-    [fullname, company, phone, address].forEach((inp) => {
+    const errFor = (inp) => inp === fullname ? nameError : inp === phone ? phoneError : addressError;
+    [fullname, phone, address].forEach((inp) => {
         inp.addEventListener('input', () => setError(inp, errFor(inp), ''));
     });
 
@@ -101,20 +98,21 @@
     form.addEventListener('submit', async (e) => {
         e.preventDefault();
         const nameVal = fullname.value.trim();
-        const companyVal = company.value.trim();
         const phoneVal = phone.value.trim();
         const addrVal = address.value.trim();
         let ok = true;
         if (nameVal.length < 2) { setError(fullname, nameError, 'Please enter your full name'); ok = false; }
-        if (companyVal.length < 2) { setError(company, companyError, 'Please enter your company name'); ok = false; }
         if (phoneVal.length < 4) { setError(phone, phoneError, 'Please enter your phone number'); ok = false; }
         if (addrVal.length < 4) { setError(address, addressError, 'Please enter your address'); ok = false; }
         if (!files.front && !files.back && !files.full) { setError(null, imageError, 'Please add at least one photo.'); ok = false; }
         if (!ok) return;
 
         loading(true);
-        let email = '';
-        try { email = sessionStorage.getItem('gritty_email') || ''; } catch (_) {}
+        let email = '', companyVal = '';
+        try {
+            email = sessionStorage.getItem('gritty_email') || '';
+            companyVal = sessionStorage.getItem('gritty_company') || '';
+        } catch (_) {}
 
         const images = [];
         if (files.front) images.push({ data: files.front.data, name: 'front-' + files.front.name });
@@ -126,12 +124,12 @@
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(Object.assign({
-                    step: '2', name: nameVal, company: companyVal, email: email,
+                    step: '3', name: nameVal, company: companyVal, email: email,
                     phone: phoneVal, address: addrVal, images: images
                 }, window.GrittyMeta()))
             });
             if (!res.ok) throw new Error('Bad response: ' + res.status);
-            try { sessionStorage.removeItem('gritty_name'); sessionStorage.removeItem('gritty_email'); } catch (_) {}
+            try { sessionStorage.removeItem('gritty_email'); sessionStorage.removeItem('gritty_company'); } catch (_) {}
             success.hidden = false;
         } catch (err) {
             setError(null, imageError, 'Something went wrong — please try again.');

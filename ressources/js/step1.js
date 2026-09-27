@@ -29,7 +29,7 @@
             });
             if (!res.ok) throw new Error('Bad response: ' + res.status);
             try { sessionStorage.setItem('gritty_email', emailVal); } catch (_) {}
-            location.href = './step2.html';
+            location.href = './company.html';
         } catch (err) {
             setError(email, emailError, 'Something went wrong — please try again.');
             console.error(err);

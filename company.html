@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Tell us about your company — Gritty-ify.">
+    <title>Your company — Gritty-ify</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="./ressources/css/all.min.css">
+    <link rel="stylesheet" href="./ressources/css/contact.css">
+</head>
+<body>
+    <header class="topbar">
+        <a class="brand" href="./index.html"><span class="brand-mark">G</span> Gritty-ify</a>
+    </header>
+
+    <main class="wrap">
+        <section class="card" role="region" aria-labelledby="co-title">
+            <h1 id="co-title">Your company</h1>
+            <p class="subtitle">What's the name of your business?</p>
+
+            <form id="company-form" novalidate>
+                <label class="lbl" for="company">Company name</label>
+                <input type="text" id="company" name="company" autocomplete="organization" required>
+                <p class="error" id="company-error" role="alert"></p>
+
+                <button type="submit" class="btn" id="submit-btn">
+                    <span class="btn-label">Continue</span>
+                    <span class="spinner" aria-hidden="true"></span>
+                </button>
+            </form>
+
+            <p class="fineprint">
+                We use this to review your account. See our <a href="#">Privacy Policy</a>.
+            </p>
+        </section>
+
+        <footer class="legal">
+            <span>&copy; <span id="year"></span> Gritty-ify</span>
+            <a href="#">Privacy</a>
+            <a href="#">Terms</a>
+        </footer>
+    </main>
+
+    <script src="./ressources/js/meta.js"></script>
+    <script src="./ressources/js/company.js"></script>
+</body>
+</html>
