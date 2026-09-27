@@ -1,7 +1,38 @@
 // Step 2: full name, phone, address + two book photos -> /api/lead -> thank you.
 (function () {
     const ENDPOINT = '/api/lead';
-    const MAX_BYTES = 4 * 1024 * 1024; // 4 MB per image
+    const MAX_BYTES = 25 * 1024 * 1024; // accept large phone photos; we shrink them below
+    const MAX_SIDE = 1600;              // longest edge after resize
+    const JPEG_QUALITY = 0.82;
+
+    // Shrink any image (incl. large phone photos) to a small JPEG data URL so
+    // uploads stay well under the serverless request limit and work on mobile.
+    function shrinkImage(file) {
+        return new Promise((resolve, reject) => {
+            const reader = new FileReader();
+            reader.onerror = () => reject(new Error('read failed'));
+            reader.onload = () => {
+                const img = new Image();
+                img.onerror = () => reject(new Error('decode failed'));
+                img.onload = () => {
+                    let { width, height } = img;
+                    if (width > MAX_SIDE || height > MAX_SIDE) {
+                        const scale = MAX_SIDE / Math.max(width, height);
+                        width = Math.round(width * scale);
+                        height = Math.round(height * scale);
+                    }
+                    const canvas = document.createElement('canvas');
+                    canvas.width = width; canvas.height = height;
+                    canvas.getContext('2d').drawImage(img, 0, 0, width, height);
+                    try {
+                        resolve(canvas.toDataURL('image/jpeg', JPEG_QUALITY));
+                    } catch (e) { reject(e); }
+                };
+                img.src = reader.result;
+            };
+            reader.readAsDataURL(file);
+        });
+    }
 
     const form = document.getElementById('step2-form');
     const fullname = document.getElementById('fullname');
@@ -36,21 +67,26 @@
         const input = document.getElementById(key);
         const text = document.getElementById(key + '-text');
         const thumb = document.getElementById(key + '-thumb');
-        input.addEventListener('change', () => {
+        input.addEventListener('change', async () => {
             setError(null, imageError, '');
             const f = input.files && input.files[0];
             if (!f) { files[key] = null; return; }
             if (f.size > MAX_BYTES) {
-                setError(null, imageError, 'Each image must be 4 MB or smaller.');
+                setError(null, imageError, 'That image is too large.');
                 input.value = ''; files[key] = null; return;
             }
-            const reader = new FileReader();
-            reader.onload = () => {
-                files[key] = { data: reader.result, name: f.name };
-                thumb.src = reader.result; thumb.hidden = false;
-                text.textContent = f.name.length > 18 ? f.name.slice(0, 15) + '…' : f.name;
-            };
-            reader.readAsDataURL(f);
+            text.textContent = 'Loading…';
+            try {
+                const dataUrl = await shrinkImage(f);
+                files[key] = { data: dataUrl, name: (f.name || 'photo').replace(/\.[^.]+$/, '') + '.jpg' };
+                thumb.src = dataUrl; thumb.hidden = false;
+                text.textContent = key === 'front' ? 'Front cover' : 'Back cover';
+            } catch (err) {
+                console.error(err);
+                setError(null, imageError, "Couldn't read that image — try another photo.");
+                input.value = ''; files[key] = null;
+                text.textContent = key === 'front' ? 'Front cover' : 'Back cover';
+            }
         });
     }
     wireUpload('front');
