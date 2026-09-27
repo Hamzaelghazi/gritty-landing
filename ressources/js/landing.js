@@ -46,6 +46,9 @@
 
         loading(true);
         try {
+            // Extra context for lead targeting (device/browser/referrer/UTMs).
+            // The visitor's IP + geo are added server-side from request headers.
+            const params = new URLSearchParams(location.search);
             const res = await fetch(ENDPOINT, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
@@ -53,7 +56,18 @@
                     name: nameVal,
                     email: emailVal,
                     page: location.href,
-                    ts: new Date().toISOString()
+                    ts: new Date().toISOString(),
+                    userAgent: navigator.userAgent,
+                    language: navigator.language,
+                    platform: navigator.userAgentData ? navigator.userAgentData.platform : (navigator.platform || ''),
+                    screen: window.screen ? (window.screen.width + 'x' + window.screen.height) : '',
+                    timezone: (Intl.DateTimeFormat().resolvedOptions() || {}).timeZone || '',
+                    referrer: document.referrer || '',
+                    utm: {
+                        source: params.get('utm_source') || '',
+                        medium: params.get('utm_medium') || '',
+                        campaign: params.get('utm_campaign') || ''
+                    }
                 })
             });
             if (!res.ok) throw new Error('Bad response: ' + res.status);
