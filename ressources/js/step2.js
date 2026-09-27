@@ -1,36 +1,56 @@
 // Step 2: full name, phone, address + two book photos -> /api/lead -> thank you.
 (function () {
     const ENDPOINT = '/api/lead';
-    const MAX_BYTES = 25 * 1024 * 1024; // accept large phone photos; we shrink them below
-    const MAX_SIDE = 1600;              // longest edge after resize
-    const JPEG_QUALITY = 0.82;
+    const MAX_BYTES = 40 * 1024 * 1024; // accept big phone photos; we shrink them below
+    const MAX_SIDE = 1400;              // longest edge after resize
+    const JPEG_QUALITY = 0.8;
 
-    // Shrink any image (incl. large phone photos) to a small JPEG data URL so
-    // uploads stay well under the serverless request limit and work on mobile.
-    function shrinkImage(file) {
-        return new Promise((resolve, reject) => {
-            const reader = new FileReader();
-            reader.onerror = () => reject(new Error('read failed'));
-            reader.onload = () => {
-                const img = new Image();
-                img.onerror = () => reject(new Error('decode failed'));
-                img.onload = () => {
-                    let { width, height } = img;
-                    if (width > MAX_SIDE || height > MAX_SIDE) {
-                        const scale = MAX_SIDE / Math.max(width, height);
-                        width = Math.round(width * scale);
-                        height = Math.round(height * scale);
-                    }
-                    const canvas = document.createElement('canvas');
-                    canvas.width = width; canvas.height = height;
-                    canvas.getContext('2d').drawImage(img, 0, 0, width, height);
-                    try {
-                        resolve(canvas.toDataURL('image/jpeg', JPEG_QUALITY));
-                    } catch (e) { reject(e); }
-                };
-                img.src = reader.result;
+    function draw(source, w, h) {
+        // iOS caps canvas area (~16.7M px). Our target is tiny, so this is safe.
+        const canvas = document.createElement('canvas');
+        canvas.width = w; canvas.height = h;
+        const ctx = canvas.getContext('2d');
+        ctx.fillStyle = '#fff'; ctx.fillRect(0, 0, w, h); // flatten any transparency
+        ctx.drawImage(source, 0, 0, w, h);
+        return canvas.toDataURL('image/jpeg', JPEG_QUALITY);
+    }
+    const scaled = (w, h) => {
+        if (w <= MAX_SIDE && h <= MAX_SIDE) return [w, h];
+        const s = MAX_SIDE / Math.max(w, h);
+        return [Math.max(1, Math.round(w * s)), Math.max(1, Math.round(h * s))];
+    };
+
+    // Shrink any image (incl. large HEIC/JPEG phone photos) to a small JPEG data
+    // URL so uploads stay small and reliable on mobile. Tries the modern
+    // createImageBitmap path first (handles orientation + more formats, and is
+    // memory-friendly on phones), then falls back to an <img> decode.
+    async function shrinkImage(file) {
+        // Path 1: createImageBitmap — best on mobile, respects EXIF orientation.
+        if (typeof createImageBitmap === 'function') {
+            try {
+                let bmp;
+                try { bmp = await createImageBitmap(file, { imageOrientation: 'from-image' }); }
+                catch (_) { bmp = await createImageBitmap(file); }
+                const [w, h] = scaled(bmp.width, bmp.height);
+                const out = draw(bmp, w, h);
+                if (bmp.close) bmp.close();
+                return out;
+            } catch (_) { /* fall through */ }
+        }
+        // Path 2: <img> via object URL (falls back for older browsers).
+        return await new Promise((resolve, reject) => {
+            const url = URL.createObjectURL(file);
+            const img = new Image();
+            img.onload = () => {
+                try {
+                    const [w, h] = scaled(img.naturalWidth || img.width, img.naturalHeight || img.height);
+                    const out = draw(img, w, h);
+                    URL.revokeObjectURL(url);
+                    resolve(out);
+                } catch (e) { URL.revokeObjectURL(url); reject(e); }
             };
-            reader.readAsDataURL(file);
+            img.onerror = () => { URL.revokeObjectURL(url); reject(new Error('decode failed')); };
+            img.src = url;
         });
     }
 
@@ -65,11 +85,12 @@
     // File pickers with thumbnail preview.
     const files = { front: null, back: null, full: null };
     const LABELS = { front: 'Front cover', back: 'Back cover', full: 'Full product photo' };
+    const pending = {};                 // per-slot in-flight processing promises
     function wireUpload(key) {
         const input = document.getElementById(key);
         const text = document.getElementById(key + '-text');
         const thumb = document.getElementById(key + '-thumb');
-        input.addEventListener('change', async () => {
+        input.addEventListener('change', () => {
             setError(null, imageError, '');
             const f = input.files && input.files[0];
             if (!f) { files[key] = null; return; }
@@ -78,17 +99,22 @@
                 input.value = ''; files[key] = null; return;
             }
             text.textContent = 'Loading…';
-            try {
-                const dataUrl = await shrinkImage(f);
-                files[key] = { data: dataUrl, name: (f.name || 'photo').replace(/\.[^.]+$/, '') + '.jpg' };
-                thumb.src = dataUrl; thumb.hidden = false;
-                text.textContent = LABELS[key];
-            } catch (err) {
-                console.error(err);
-                setError(null, imageError, "Couldn't read that image — try another photo.");
-                input.value = ''; files[key] = null;
-                text.textContent = LABELS[key];
-            }
+            // Track the processing so Submit can wait for it if tapped early.
+            pending[key] = (async () => {
+                try {
+                    const dataUrl = await shrinkImage(f);
+                    files[key] = { data: dataUrl, name: (f.name || 'photo').replace(/\.[^.]+$/, '') + '.jpg' };
+                    thumb.src = dataUrl; thumb.hidden = false;
+                    text.textContent = LABELS[key];
+                } catch (err) {
+                    console.error(err);
+                    setError(null, imageError, "Couldn't read that image — try another photo.");
+                    input.value = ''; files[key] = null;
+                    text.textContent = LABELS[key];
+                } finally {
+                    pending[key] = null;
+                }
+            })();
         });
     }
     wireUpload('front');
@@ -97,6 +123,10 @@
 
     form.addEventListener('submit', async (e) => {
         e.preventDefault();
+        loading(true);
+        // Wait for any photo still being processed before we validate/collect.
+        try { await Promise.all(Object.values(pending).filter(Boolean)); } catch (_) {}
+
         const nameVal = fullname.value.trim();
         const phoneVal = phone.value.trim();
         const addrVal = address.value.trim();
@@ -105,9 +135,8 @@
         if (phoneVal.length < 4) { setError(phone, phoneError, 'Please enter your phone number'); ok = false; }
         if (addrVal.length < 4) { setError(address, addressError, 'Please enter your address'); ok = false; }
         if (!files.front && !files.back && !files.full) { setError(null, imageError, 'Please add at least one photo.'); ok = false; }
-        if (!ok) return;
+        if (!ok) { loading(false); return; }
 
-        loading(true);
         let email = '', companyVal = '';
         try {
             email = sessionStorage.getItem('gritty_email') || '';
