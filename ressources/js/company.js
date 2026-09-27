@@ -12,6 +12,10 @@
     const setError = (msg) => { company.classList.toggle('invalid', !!msg); companyError.textContent = msg; };
     const loading = (on) => { submitBtn.classList.toggle('loading', on); submitBtn.disabled = on; };
 
+    // Reset the button when returning to the page (incl. bfcache back-nav),
+    // otherwise it can stay stuck spinning.
+    window.addEventListener('pageshow', () => loading(false));
+
     company.addEventListener('input', () => setError(''));
 
     form.addEventListener('submit', async (e) => {

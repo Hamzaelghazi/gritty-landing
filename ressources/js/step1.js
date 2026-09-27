@@ -13,6 +13,9 @@
     const setError = (input, el, msg) => { input.classList.toggle('invalid', !!msg); el.textContent = msg; };
     const loading = (on) => { submitBtn.classList.toggle('loading', on); submitBtn.disabled = on; };
 
+    // Reset the button when returning to the page (incl. bfcache back-nav).
+    window.addEventListener('pageshow', () => loading(false));
+
     email.addEventListener('input', () => setError(email, emailError, ''));
 
     form.addEventListener('submit', async (e) => {

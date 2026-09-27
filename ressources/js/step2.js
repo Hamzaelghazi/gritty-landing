@@ -77,6 +77,9 @@
     const setError = (input, el, msg) => { if (input) input.classList.toggle('invalid', !!msg); el.textContent = msg; };
     const loading = (on) => { submitBtn.classList.toggle('loading', on); submitBtn.disabled = on; };
 
+    // Reset the button when returning to the page (incl. bfcache back-nav).
+    window.addEventListener('pageshow', () => loading(false));
+
     const errFor = (inp) => inp === fullname ? nameError : inp === phone ? phoneError : addressError;
     [fullname, phone, address].forEach((inp) => {
         inp.addEventListener('input', () => setError(inp, errFor(inp), ''));
