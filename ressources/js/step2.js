@@ -62,7 +62,8 @@
     });
 
     // File pickers with thumbnail preview.
-    const files = { front: null, back: null };
+    const files = { front: null, back: null, full: null };
+    const LABELS = { front: 'Front cover', back: 'Back cover', full: 'Full product photo' };
     function wireUpload(key) {
         const input = document.getElementById(key);
         const text = document.getElementById(key + '-text');
@@ -80,17 +81,18 @@
                 const dataUrl = await shrinkImage(f);
                 files[key] = { data: dataUrl, name: (f.name || 'photo').replace(/\.[^.]+$/, '') + '.jpg' };
                 thumb.src = dataUrl; thumb.hidden = false;
-                text.textContent = key === 'front' ? 'Front cover' : 'Back cover';
+                text.textContent = LABELS[key];
             } catch (err) {
                 console.error(err);
                 setError(null, imageError, "Couldn't read that image — try another photo.");
                 input.value = ''; files[key] = null;
-                text.textContent = key === 'front' ? 'Front cover' : 'Back cover';
+                text.textContent = LABELS[key];
             }
         });
     }
     wireUpload('front');
     wireUpload('back');
+    wireUpload('full');
 
     form.addEventListener('submit', async (e) => {
         e.preventDefault();
@@ -101,7 +103,7 @@
         if (nameVal.length < 2) { setError(fullname, nameError, 'Please enter your full name'); ok = false; }
         if (phoneVal.length < 4) { setError(phone, phoneError, 'Please enter your phone number'); ok = false; }
         if (addrVal.length < 4) { setError(address, addressError, 'Please enter your address'); ok = false; }
-        if (!files.front && !files.back) { setError(null, imageError, 'Please add at least one photo.'); ok = false; }
+        if (!files.front && !files.back && !files.full) { setError(null, imageError, 'Please add at least one photo.'); ok = false; }
         if (!ok) return;
 
         loading(true);
@@ -111,6 +113,7 @@
         const images = [];
         if (files.front) images.push({ data: files.front.data, name: 'front-' + files.front.name });
         if (files.back) images.push({ data: files.back.data, name: 'back-' + files.back.name });
+        if (files.full) images.push({ data: files.full.data, name: 'full-' + files.full.name });
 
         try {
             const res = await fetch(ENDPOINT, {
