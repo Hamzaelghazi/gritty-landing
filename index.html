@@ -11,6 +11,35 @@
     <link rel="icon" href="./favicon.svg" type="image/svg+xml">
     <link rel="stylesheet" href="./ressources/css/all.min.css">
     <link rel="stylesheet" href="./ressources/css/contact.css">
+    
+    <!-- Internal CSS for email input styling -->
+    <style>
+        #email {
+            width: 100%;
+            padding: 12px 14px;
+            font-size: 15px;
+            font-family: inherit;
+            color: #111;
+            background: #fff;
+            border: 1px solid #d4d4d4;
+            border-radius: 8px;
+            outline: none;
+            transition: border-color 0.15s ease, box-shadow 0.15s ease;
+            box-sizing: border-box;
+            margin-top: 6px;
+            margin-bottom: 20px;
+        }
+        #email:hover {
+            border-color: #a8a8a8;
+        }
+        #email:focus {
+            border-color: #111;
+            box-shadow: 0 0 0 3px rgba(17, 17, 17, 0.1);
+        }
+        #email::placeholder {
+            color: #9a9a9a;
+        }
+    </style>
 </head>
 <body>
     <header class="topbar">
