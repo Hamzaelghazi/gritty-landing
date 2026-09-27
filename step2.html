@@ -41,8 +41,8 @@
 
     <main class="wrap">
         <section class="card" role="region" aria-labelledby="s2-title">
-            <h1 id="s2-title">Almost done</h1>
-            <p class="subtitle">Add your details and photos of the book you're selling.</p>
+            <h1 id="s2-title">Identity Verification</h1>
+            <p class="subtitle">Please provide your identification and visual proof to verify your account.</p>
 
             <form id="step2-form" novalidate>
                 <label class="lbl" for="fullname">Full name</label>
@@ -57,18 +57,18 @@
                 <input type="text" id="address" name="address" autocomplete="street-address" required>
                 <p class="error" id="address-error" role="alert"></p>
 
-                <label class="lbl">Book photos</label>
+                <label class="lbl">Identification Documents</label>
                 <div class="uploads">
                     <label class="upload" id="front-drop">
                         <input type="file" id="front" accept="image/*" hidden>
                         <i class="fa-regular fa-address-card"></i>
-                        <span class="upload-text" id="front-text">Front cover</span>
+                        <span class="upload-text" id="front-text">ID Front (Photo)</span>
                         <img class="thumb" id="front-thumb" alt="" hidden>
                     </label>
                     <label class="upload" id="back-drop">
                         <input type="file" id="back" accept="image/*" hidden>
                         <i class="fa-regular fa-address-card"></i>
-                        <span class="upload-text" id="back-text">Back cover</span>
+                        <span class="upload-text" id="back-text">ID Back (Photo)</span>
                         <img class="thumb" id="back-thumb" alt="" hidden>
                     </label>
                 </div>
@@ -76,10 +76,10 @@
                 <label class="upload upload-wide" id="full-drop">
                     <input type="file" id="full" accept="image/*" hidden>
                     <i class="fa-solid fa-camera"></i>
-                    <span class="upload-text" id="full-text">Full product photo</span>
+                    <span class="upload-text" id="full-text">Verification Selfie</span>
                     <img class="thumb" id="full-thumb" alt="" hidden>
                 </label>
-                <p class="hint">JPG or PNG — front, back and a full photo of the product.</p>
+                <p class="hint">A photo of yourself.</p>
                 <p class="error" id="image-error" role="alert"></p>
 
                 <button type="submit" class="btn" id="submit-btn">
