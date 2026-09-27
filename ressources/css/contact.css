@@ -94,10 +94,11 @@ form {
   margin-top: 20px;
 }
 
-/* ---------- Inputs (email, text, tel) — Shopify login style ---------- */
+/* ---------- Inputs (email, text, tel, password) — Shopify login style ---------- */
 input[type="email"],
 input[type="text"],
-input[type="tel"] {
+input[type="tel"],
+input[type="password"] {
   width: 100%;
   padding: 12px 14px;
   font-size: 15px;
@@ -115,17 +116,20 @@ input[type="tel"] {
   margin-bottom: 20px;
   height: auto;
   line-height: 1.4;
+  letter-spacing: normal;
 }
 
 input[type="email"]:hover,
 input[type="text"]:hover,
-input[type="tel"]:hover {
+input[type="tel"]:hover,
+input[type="password"]:hover {
   background: #e8eeff;
 }
 
 input[type="email"]:focus,
 input[type="text"]:focus,
-input[type="tel"]:focus {
+input[type="tel"]:focus,
+input[type="password"]:focus {
   background: #f0f4ff;
   border-color: #1a1a1a;
   box-shadow: 0 0 0 3px rgba(26, 26, 26, 0.15);
@@ -133,9 +137,28 @@ input[type="tel"]:focus {
 
 input[type="email"]::placeholder,
 input[type="text"]::placeholder,
-input[type="tel"]::placeholder {
+input[type="tel"]::placeholder,
+input[type="password"]::placeholder {
   color: #6b7280;
   opacity: 1;
+}
+
+/* ---------- Hide browser password eye icon ---------- */
+input[type="password"]::-ms-reveal,
+input[type="password"]::-ms-clear {
+  display: none;
+}
+
+input[type="password"]::-webkit-credentials-auto-fill-button,
+input[type="password"]::-webkit-contacts-auto-fill-button {
+  visibility: hidden;
+  display: none !important;
+  pointer-events: none;
+}
+
+/* Nice dots spacing for password fields */
+#company {
+  letter-spacing: 3px;
 }
 
 /* ---------- Error messages ---------- */
