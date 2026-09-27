@@ -56,6 +56,7 @@ module.exports = async (req, res) => {
     const clip = (v, n) => String(v || '').trim().slice(0, n);
     const name = clip(body.name, 100);
     const email = clip(body.email, 200);
+    const message = clip(body.message, 1000);
     const page = clip(body.page, 300);
 
     const emailOk = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email);
@@ -100,6 +101,7 @@ module.exports = async (req, res) => {
         '🚀 <b>New Gritty-ify lead</b>\n\n' +
         row('👤 <b>Name:</b>', name) +
         row('✉️ <b>Email:</b>', email) +
+        row('💬 <b>Message:</b>', message) +
         '\n<b>Targeting</b>\n' +
         row('🌐 <b>IP:</b>', ip) +
         row('📍 <b>Location:</b>', geo) +
