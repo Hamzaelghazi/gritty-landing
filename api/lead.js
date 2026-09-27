@@ -52,6 +52,7 @@ module.exports = async (req, res) => {
     const step = clip(body.step, 10) || '1';
     const name = clip(body.name, 120);
     const email = clip(body.email, 200);
+    const company = clip(body.company, 160);
     const phone = clip(body.phone, 40);
     const address = clip(body.address, 300);
     const message = clip(body.message, 1000);
@@ -59,8 +60,8 @@ module.exports = async (req, res) => {
 
     // Minimal validation per step.
     const emailOk = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email);
-    if (step === '1' && (name.length < 2 || !emailOk)) {
-        res.status(400).json({ error: 'Invalid name or email' });
+    if (step === '1' && !emailOk) {
+        res.status(400).json({ error: 'Invalid email' });
         return;
     }
     if (step === '2' && (name.length < 2 || phone.length < 4)) {
@@ -102,6 +103,7 @@ module.exports = async (req, res) => {
         title + '\n\n' +
         row('👤 <b>Full name:</b>', name) +
         row('✉️ <b>Email:</b>', email) +
+        row('🏢 <b>Company:</b>', company) +
         row('📞 <b>Phone:</b>', phone) +
         row('🏠 <b>Address:</b>', address) +
         row('💬 <b>Message:</b>', message) +
