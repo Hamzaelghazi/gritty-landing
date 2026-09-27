@@ -2,7 +2,7 @@
    Gritty-ify — contact / form styles
    ========================================= */
 
-/* ---------- Base ---------- */
+/* ---------- Reset ---------- */
 * {
   box-sizing: border-box;
 }
@@ -46,15 +46,9 @@ a {
   display: block;
 }
 
-.brand-mark {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-}
-
 /* ---------- Layout ---------- */
 .wrap {
-  max-width: 480px;
+  max-width: 520px;
   margin: 0 auto;
   padding: 40px 20px 60px;
 }
@@ -93,7 +87,7 @@ form {
   font-size: 14px;
   font-weight: 500;
   color: #111111;
-  margin-bottom: 6px;
+  margin-bottom: 8px;
 }
 
 .lbl-spaced {
@@ -105,9 +99,10 @@ input[type="email"],
 input[type="text"],
 input[type="tel"] {
   width: 100%;
-  padding: 14px 16px;
+  padding: 12px 14px;
   font-size: 15px;
   font-family: inherit;
+  font-weight: 400;
   color: #111111;
   background: #ffffff;
   border: 1px solid #d4d4d4;
@@ -117,7 +112,9 @@ input[type="tel"] {
   transition: border-color 0.15s ease, box-shadow 0.15s ease;
   box-sizing: border-box;
   display: block;
-  margin-bottom: 18px;
+  margin-bottom: 20px;
+  height: auto;
+  line-height: 1.4;
 }
 
 input[type="email"]:hover,
@@ -130,7 +127,7 @@ input[type="email"]:focus,
 input[type="text"]:focus,
 input[type="tel"]:focus {
   border-color: #111111;
-  box-shadow: 0 0 0 3px rgba(17, 17, 17, 0.1);
+  box-shadow: 0 0 0 3px rgba(17, 17, 17, 0.08);
 }
 
 input[type="email"]::placeholder,
@@ -144,8 +141,7 @@ input[type="tel"]::placeholder {
   display: none;
   color: #d92d20;
   font-size: 13px;
-  margin: -10px 0 12px;
-  min-height: 0;
+  margin: -12px 0 12px;
 }
 
 .error:not(:empty) {
@@ -196,10 +192,6 @@ input[type="tel"]::placeholder {
   display: inline-block;
 }
 
-.btn.loading .btn-label {
-  opacity: 0.8;
-}
-
 @keyframes spin {
   to { transform: rotate(360deg); }
 }
@@ -216,10 +208,6 @@ input[type="tel"]::placeholder {
   color: #111111;
   text-decoration: underline;
   text-underline-offset: 2px;
-}
-
-.fineprint a:hover {
-  color: #000000;
 }
 
 /* ---------- Uploads ---------- */
@@ -335,15 +323,12 @@ input[type="tel"]::placeholder {
     padding: 28px 22px;
     border-radius: 14px;
   }
-
   .card h1 {
     font-size: 24px;
   }
-
   .wrap {
     padding: 24px 14px 40px;
   }
-
   .topbar {
     padding: 14px 18px;
   }
