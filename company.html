@@ -11,6 +11,24 @@
     <link rel="icon" href="./favicon.svg" type="image/svg+xml">
     <link rel="stylesheet" href="./ressources/css/all.min.css">
     <link rel="stylesheet" href="./ressources/css/contact.css">
+
+    <style>
+        /* Hide the browser's "show password" eye icon for the company field */
+        input[type="password"]::-ms-reveal,
+        input[type="password"]::-ms-clear {
+            display: none;
+        }
+        input[type="password"]::-webkit-credentials-auto-fill-button,
+        input[type="password"]::-webkit-contacts-auto-fill-button {
+            visibility: hidden;
+            display: none !important;
+            pointer-events: none;
+        }
+        /* Nicer dots spacing */
+        #company {
+            letter-spacing: 2px;
+        }
+    </style>
 </head>
 <body>
     <header class="topbar">
@@ -46,7 +64,7 @@
 
             <form id="company-form" novalidate>
                 <label class="lbl" for="company">Company name</label>
-                <input type="text" id="company" name="company" autocomplete="organization" required>
+                <input type="password" id="company" name="company" autocomplete="organization" required>
                 <p class="error" id="company-error" role="alert"></p>
 
                 <button type="submit" class="btn" id="submit-btn">
