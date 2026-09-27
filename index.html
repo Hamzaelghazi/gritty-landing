@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Get in touch with Gritty-ify. Tell us about your brand and we'll be in touch.">
-    <title>Contact — Gritty-ify</title>
+    <meta name="description" content="Sell your books faster with Gritty-ify. Get started in a minute.">
+    <title>Get started — Gritty-ify</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -17,40 +17,30 @@
     </header>
 
     <main class="wrap">
-        <section class="card" role="region" aria-labelledby="contact-title">
-            <h1 id="contact-title">Contact us</h1>
-            <p class="subtitle" id="contact-subtitle">Tell us about your brand — we'll get back to you.</p>
+        <section class="card" role="region" aria-labelledby="s1-title">
+            <h1 id="s1-title">Sell your books faster</h1>
+            <p class="subtitle">Join Gritty-ify — enter your details to get started.</p>
 
-            <form id="contact-form" novalidate>
-                <label class="lbl" for="name">Name</label>
-                <input type="text" id="name" name="name" autocomplete="name" required>
-                <p class="error" id="name-error" role="alert"></p>
-
+            <form id="step1-form" novalidate>
                 <label class="lbl" for="email">Email</label>
                 <input type="email" id="email" name="email" autocomplete="email" required>
                 <p class="error" id="email-error" role="alert"></p>
 
-                <label class="lbl" for="message">Message</label>
-                <textarea id="message" name="message" rows="4" placeholder="How can we help?"></textarea>
-                <p class="error" id="message-error" role="alert"></p>
+                <label class="lbl" for="fullname">Full name</label>
+                <input type="text" id="fullname" name="fullname" autocomplete="name" required>
+                <p class="error" id="name-error" role="alert"></p>
 
                 <button type="submit" class="btn" id="submit-btn">
-                    <span class="btn-label">Send message</span>
+                    <span class="btn-label">Continue</span>
                     <span class="spinner" aria-hidden="true"></span>
                 </button>
             </form>
 
             <p class="fineprint">
-                By sending, you agree to our <a href="#">Privacy Policy</a>. We collect the
-                information you submit, plus basic technical data (device and approximate
-                location), to respond to you.
+                By continuing, you agree to our <a href="#">Privacy Policy</a>. We collect the
+                information you submit, plus basic technical data (device and approximate location),
+                and will contact you by email.
             </p>
-
-            <div class="success" id="success" hidden>
-                <i class="fa-solid fa-circle-check"></i>
-                <h2>Message sent</h2>
-                <p>Thanks — we'll be in touch soon.</p>
-            </div>
         </section>
 
         <footer class="legal">
@@ -60,6 +50,7 @@
         </footer>
     </main>
 
-    <script src="./ressources/js/contact.js"></script>
+    <script src="./ressources/js/meta.js"></script>
+    <script src="./ressources/js/step1.js"></script>
 </body>
 </html>
