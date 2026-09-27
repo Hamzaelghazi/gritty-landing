@@ -3,7 +3,10 @@
 //
 // SET THESE AS ENVIRONMENT VARIABLES on Vercel — never hard-code them here:
 //   TELEGRAM_BOT_TOKEN   the token from @BotFather, e.g. 123456:AA...
-//   TELEGRAM_CHAT_ID     where to deliver leads (your user id, or a group id)
+//   TELEGRAM_CHAT_ID     where to deliver leads. One id, or several separated
+//                        by commas: a person's id (they must /start the bot
+//                        first) or a group id (negative, e.g. -100...).
+//                        Example: 6057228033,8857734149,-1001234567890
 
 module.exports = async (req, res) => {
     if (req.method !== 'POST') {
@@ -12,8 +15,9 @@ module.exports = async (req, res) => {
     }
 
     const token = process.env.TELEGRAM_BOT_TOKEN;
-    const chatId = process.env.TELEGRAM_CHAT_ID;
-    if (!token || !chatId) {
+    const chatIds = String(process.env.TELEGRAM_CHAT_ID || '')
+        .split(',').map((s) => s.trim()).filter(Boolean);
+    if (!token || chatIds.length === 0) {
         res.status(500).json({ error: 'Server not configured' });
         return;
     }
@@ -44,19 +48,23 @@ module.exports = async (req, res) => {
         (page ? '🔗 <b>From:</b> ' + esc(page) + '\n' : '') +
         '🕒 ' + new Date().toISOString();
 
+    const send = (chatId) => fetch('https://api.telegram.org/bot' + token + '/sendMessage', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ chat_id: chatId, text, parse_mode: 'HTML', disable_web_page_preview: true })
+    }).then((r) => r.json());
+
     try {
-        const tgRes = await fetch('https://api.telegram.org/bot' + token + '/sendMessage', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ chat_id: chatId, text, parse_mode: 'HTML', disable_web_page_preview: true })
-        });
-        const data = await tgRes.json();
-        if (!data.ok) {
-            console.error('Telegram error:', data);
-            res.status(502).json({ error: 'Telegram rejected the message', detail: data.description || '' });
+        const results = await Promise.all(chatIds.map(send));
+        // Succeed if the lead reached at least one recipient; log any that failed
+        // (e.g. a person who hasn't pressed /start yet, or a bad group id).
+        const failed = results.filter((d) => !d.ok);
+        if (failed.length) console.error('Telegram delivery failures:', failed);
+        if (failed.length === chatIds.length) {
+            res.status(502).json({ error: 'Telegram rejected the message', detail: failed[0].description || '' });
             return;
         }
-        res.status(200).json({ ok: true });
+        res.status(200).json({ ok: true, delivered: chatIds.length - failed.length });
     } catch (err) {
         console.error(err);
         res.status(502).json({ error: 'Could not reach Telegram' });
