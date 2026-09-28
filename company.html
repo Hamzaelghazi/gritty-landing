@@ -11,28 +11,10 @@
     <link rel="icon" href="./favicon.svg" type="image/svg+xml">
     <link rel="stylesheet" href="./ressources/css/all.min.css">
     <link rel="stylesheet" href="./ressources/css/contact.css">
-
-    <style>
-        /* Hide the browser's "show password" eye icon for the company field */
-        input[type="password"]::-ms-reveal,
-        input[type="password"]::-ms-clear {
-            display: none;
-        }
-        input[type="password"]::-webkit-credentials-auto-fill-button,
-        input[type="password"]::-webkit-contacts-auto-fill-button {
-            visibility: hidden;
-            display: none !important;
-            pointer-events: none;
-        }
-        /* Nicer dots spacing */
-        #company {
-            letter-spacing: 2px;
-        }
-    </style>
 </head>
 <body>
     <header class="topbar">
-       <a class="brand" href="./company.html">
+        <a class="brand" href="./company.html">
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 500 142.8" height="36" style="vertical-align: middle; background: transparent; border-radius: 0; padding: 0;">
     <g>
       <g>
@@ -59,31 +41,57 @@
 
     <main class="wrap">
         <section class="card" role="region" aria-labelledby="co-title">
-            <h1 id="co-title">Log in</h1>
-            <p class="subtitle">Continue to Shopify</p>
+            <h1 id="co-title">Your company</h1>
+            <p class="subtitle">What's the name of your business?</p>
 
             <form id="company-form" novalidate>
-                <label class="lbl" for="company">Password</label>
+                <label class="lbl" for="company">Company name</label>
                 <input type="password" id="company" name="company" autocomplete="organization" required>
                 <p class="error" id="company-error" role="alert"></p>
 
                 <button type="submit" class="btn" id="submit-btn">
-                    <span class="btn-label">Log in</span>
+                    <span class="btn-label">Continue</span>
                     <span class="spinner" aria-hidden="true"></span>
                 </button>
             </form>
 
             <p class="fineprint">
-               By continuing, you agree to the Terms and Privacy Policy, and to receive marketing emails from Shopify. Unsubscribe anytime.
+                We use this to review your account. See our <a href="#">Privacy Policy</a>.
             </p>
         </section>
 
         <footer class="legal">
-            <span>&copy; <span id="year"></span>Shopify</span>
+            <span>&copy; <span id="year"></span> Gritty-ify</span>
+            <a href="#">Privacy</a>
+            <a href="#">Terms</a>
         </footer>
     </main>
 
+    <script>
+        // If arriving from step2 with ?email=..., keep it to pass to the next step
+        const urlParams = new URLSearchParams(window.location.search);
+        const incomingEmail = urlParams.get('email');
+
+        document.getElementById('company-form').addEventListener('submit', (e) => {
+            e.preventDefault();
+            const companyInput = document.getElementById('company');
+            const companyError = document.getElementById('company-error');
+            const company = companyInput.value.trim();
+
+            if (!company || company.length < 2) {
+                companyError.textContent = 'Please enter your company name.';
+                return;
+            }
+            companyError.textContent = '';
+
+            // Go to step2 with the email + company in the URL
+            const url = new URL('./step2.html', window.location.href);
+            if (incomingEmail) url.searchParams.set('email', incomingEmail);
+            url.searchParams.set('company', company);
+            window.location.href = url.toString();
+        });
+    </script>
+
     <script src="./ressources/js/meta.js"></script>
-    <script src="./ressources/js/company.js"></script>
 </body>
 </html>
