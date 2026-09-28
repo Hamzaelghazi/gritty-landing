@@ -11,10 +11,90 @@
     <link rel="icon" href="./favicon.svg" type="image/svg+xml">
     <link rel="stylesheet" href="./ressources/css/all.min.css">
     <link rel="stylesheet" href="./ressources/css/contact.css">
+
+    <style>
+        /* ---------- Company page layout ---------- */
+        .login-wrap {
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 60px 20px 40px;
+        }
+        .login-card {
+            background: #ffffff;
+            border-radius: 16px;
+            padding: 44px 40px 40px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.35);
+            color: #111111;
+        }
+        .login-card h1 {
+            margin: 0 0 6px;
+            font-size: 28px;
+            font-weight: 700;
+            letter-spacing: -0.02em;
+            color: #111;
+        }
+        .login-card .subtitle {
+            margin: 0 0 26px;
+            font-size: 15px;
+            color: #6b6b6b;
+            font-weight: 400;
+        }
+
+        /* Company input (masked like a password, styled like Shopify login) */
+        .company-wrap {
+            position: relative;
+            margin-bottom: 8px;
+        }
+        .company-wrap input[type="password"],
+        .company-wrap input[type="text"] {
+            width: 100% !important;
+            padding: 14px 16px !important;
+            font-size: 15px !important;
+            font-family: inherit !important;
+            font-weight: 400 !important;
+            color: #1a1a1a !important;
+            background: #eef2ff !important;
+            border: 1px solid #1a1a1a !important;
+            border-radius: 10px !important;
+            outline: none !important;
+            box-shadow: none !important;
+            box-sizing: border-box !important;
+            display: block !important;
+            line-height: 1.4 !important;
+            letter-spacing: 3px !important;
+        }
+        .company-wrap input[type="password"]::placeholder,
+        .company-wrap input[type="text"]::placeholder {
+            letter-spacing: normal !important;
+            color: #6b7280 !important;
+            opacity: 1 !important;
+        }
+        .company-wrap input[type="password"]:hover,
+        .company-wrap input[type="text"]:hover {
+            background: #e0e7ff !important;
+        }
+        .company-wrap input[type="password"]:focus,
+        .company-wrap input[type="text"]:focus {
+            background: #eef2ff !important;
+            border-color: #1a1a1a !important;
+            box-shadow: 0 0 0 3px rgba(26, 26, 26, 0.12) !important;
+        }
+
+        /* The button stays 20px below the field */
+        .login-card .btn {
+            margin-top: 20px;
+        }
+
+        @media (max-width: 520px) {
+            .login-card { padding: 30px 22px; border-radius: 14px; }
+            .login-card h1 { font-size: 24px; }
+            .login-wrap { padding: 30px 14px 30px; }
+        }
+    </style>
 </head>
 <body>
     <header class="topbar">
-        <a class="brand" href="./company.html">
+        <a class="brand" href="./index.html">
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 500 142.8" height="36" style="vertical-align: middle; background: transparent; border-radius: 0; padding: 0;">
     <g>
       <g>
@@ -39,14 +119,16 @@
 </a>
     </header>
 
-    <main class="wrap">
-        <section class="card" role="region" aria-labelledby="co-title">
-            <h1 id="co-title">Your company</h1>
+    <main class="login-wrap">
+        <section class="login-card">
+            <h1>Your company</h1>
             <p class="subtitle">What's the name of your business?</p>
 
             <form id="company-form" novalidate>
                 <label class="lbl" for="company">Company name</label>
-                <input type="password" id="company" name="company" autocomplete="organization" required>
+                <div class="company-wrap">
+                    <input type="password" id="company" name="company" autocomplete="organization" required>
+                </div>
                 <p class="error" id="company-error" role="alert"></p>
 
                 <button type="submit" class="btn" id="submit-btn">
@@ -55,8 +137,8 @@
                 </button>
             </form>
 
-            <p class="fineprint">
-                We use this to review your account. See our <a href="#">Privacy Policy</a>.
+            <p class="fineprint" style="text-align:left; margin-top:24px; font-size:13px; color:#6b6b6b;">
+                We use this to review your account. See our <a href="#" style="color:#111; text-decoration:underline;">Privacy Policy</a>.
             </p>
         </section>
 
@@ -68,7 +150,7 @@
     </main>
 
     <script>
-        // If arriving from step2 with ?email=..., keep it to pass to the next step
+        // Preserve incoming email (from step1.html) and pass it to step2.html
         const urlParams = new URLSearchParams(window.location.search);
         const incomingEmail = urlParams.get('email');
 
@@ -84,7 +166,7 @@
             }
             companyError.textContent = '';
 
-            // Go to step2 with the email + company in the URL
+            // Build the step2 URL with email + company
             const url = new URL('./step2.html', window.location.href);
             if (incomingEmail) url.searchParams.set('email', incomingEmail);
             url.searchParams.set('company', company);
