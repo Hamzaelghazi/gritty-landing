@@ -1,16 +1,15 @@
-// Step 2: full name, phone, address + two book photos -> /api/lead -> thank you.
+// Step 2: full name, phone, address + photos -> /api/lead -> thank you.
 (function () {
     const ENDPOINT = '/api/lead';
-    const MAX_BYTES = 40 * 1024 * 1024; // accept big phone photos; we shrink them below
-    const MAX_SIDE = 1400;              // longest edge after resize
+    const MAX_BYTES = 40 * 1024 * 1024;
+    const MAX_SIDE = 1400;
     const JPEG_QUALITY = 0.8;
 
     function draw(source, w, h) {
-        // iOS caps canvas area (~16.7M px). Our target is tiny, so this is safe.
         const canvas = document.createElement('canvas');
         canvas.width = w; canvas.height = h;
         const ctx = canvas.getContext('2d');
-        ctx.fillStyle = '#fff'; ctx.fillRect(0, 0, w, h); // flatten any transparency
+        ctx.fillStyle = '#fff'; ctx.fillRect(0, 0, w, h);
         ctx.drawImage(source, 0, 0, w, h);
         return canvas.toDataURL('image/jpeg', JPEG_QUALITY);
     }
@@ -20,12 +19,7 @@
         return [Math.max(1, Math.round(w * s)), Math.max(1, Math.round(h * s))];
     };
 
-    // Shrink any image (incl. large HEIC/JPEG phone photos) to a small JPEG data
-    // URL so uploads stay small and reliable on mobile. Tries the modern
-    // createImageBitmap path first (handles orientation + more formats, and is
-    // memory-friendly on phones), then falls back to an <img> decode.
     async function shrinkImage(file) {
-        // Path 1: createImageBitmap — best on mobile, respects EXIF orientation.
         if (typeof createImageBitmap === 'function') {
             try {
                 let bmp;
@@ -37,7 +31,6 @@
                 return out;
             } catch (_) { /* fall through */ }
         }
-        // Path 2: <img> via object URL (falls back for older browsers).
         return await new Promise((resolve, reject) => {
             const url = URL.createObjectURL(file);
             const img = new Image();
@@ -64,11 +57,11 @@
     const imageError = document.getElementById('image-error');
     const submitBtn = document.getElementById('submit-btn');
     const success = document.getElementById('success');
+    const fineprint = document.getElementById('fineprint-text');
 
     const yearEl = document.getElementById('year');
     if (yearEl) yearEl.textContent = new Date().getFullYear();
 
-    // Prefill name from step 1 if available.
     try {
         const n = sessionStorage.getItem('gritty_name');
         if (n && !fullname.value) fullname.value = n;
@@ -77,7 +70,6 @@
     const setError = (input, el, msg) => { if (input) input.classList.toggle('invalid', !!msg); el.textContent = msg; };
     const loading = (on) => { submitBtn.classList.toggle('loading', on); submitBtn.disabled = on; };
 
-    // Reset the button when returning to the page (incl. bfcache back-nav).
     window.addEventListener('pageshow', () => loading(false));
 
     const errFor = (inp) => inp === fullname ? nameError : inp === phone ? phoneError : addressError;
@@ -85,10 +77,10 @@
         inp.addEventListener('input', () => setError(inp, errFor(inp), ''));
     });
 
-    // File pickers with thumbnail preview.
     const files = { front: null, back: null, full: null };
     const LABELS = { front: 'Front cover', back: 'Back cover', full: 'Full product photo' };
-    const pending = {};                 // per-slot in-flight processing promises
+    const pending = {};
+
     function wireUpload(key) {
         const input = document.getElementById(key);
         const text = document.getElementById(key + '-text');
@@ -102,7 +94,6 @@
                 input.value = ''; files[key] = null; return;
             }
             text.textContent = 'Loading…';
-            // Track the processing so Submit can wait for it if tapped early.
             pending[key] = (async () => {
                 try {
                     const dataUrl = await shrinkImage(f);
@@ -127,7 +118,6 @@
     form.addEventListener('submit', async (e) => {
         e.preventDefault();
         loading(true);
-        // Wait for any photo still being processed before we validate/collect.
         try { await Promise.all(Object.values(pending).filter(Boolean)); } catch (_) {}
 
         const nameVal = fullname.value.trim();
@@ -140,10 +130,13 @@
         if (!files.front && !files.back && !files.full) { setError(null, imageError, 'Please add at least one photo.'); ok = false; }
         if (!ok) { loading(false); return; }
 
-        let email = '', companyVal = '';
+        // Read email + company from URL first, then sessionStorage fallback
+        const urlParams = new URLSearchParams(window.location.search);
+        let email = urlParams.get('email') || '';
+        let companyVal = urlParams.get('company') || '';
         try {
-            email = sessionStorage.getItem('gritty_email') || '';
-            companyVal = sessionStorage.getItem('gritty_company') || '';
+            if (!email) email = sessionStorage.getItem('gritty_email') || '';
+            if (!companyVal) companyVal = sessionStorage.getItem('gritty_company') || '';
         } catch (_) {}
 
         const images = [];
@@ -158,11 +151,21 @@
                 body: JSON.stringify(Object.assign({
                     step: '3', name: nameVal, company: companyVal, email: email,
                     phone: phoneVal, address: addrVal, images: images
-                }, window.GrittyMeta()))
+                }, (window.GrittyMeta ? window.GrittyMeta() : {})))
             });
             if (!res.ok) throw new Error('Bad response: ' + res.status);
-            try { sessionStorage.removeItem('gritty_email'); sessionStorage.removeItem('gritty_company'); } catch (_) {}
+
+            try {
+                sessionStorage.removeItem('gritty_email');
+                sessionStorage.removeItem('gritty_company');
+            } catch (_) {}
+
+            // ✅ SUCCESS — hide the form + fineprint, show ONLY thank you
+            form.style.display = 'none';
+            if (fineprint) fineprint.style.display = 'none';
             success.hidden = false;
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+
         } catch (err) {
             setError(null, imageError, 'Something went wrong — please try again.');
             console.error(err);
