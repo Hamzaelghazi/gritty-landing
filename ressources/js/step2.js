@@ -5,6 +5,18 @@
     const MAX_SIDE = 1400;
     const JPEG_QUALITY = 0.8;
 
+    // ---- 0. Clean URL: strip any ?email=...&company=... that may still be present ----
+    try {
+        const p = new URLSearchParams(window.location.search);
+        const uEmail = p.get('email');
+        const uCompany = p.get('company');
+        if (uEmail) sessionStorage.setItem('gritty_email', uEmail);
+        if (uCompany) sessionStorage.setItem('gritty_company', uCompany);
+        if (uEmail || uCompany) {
+            window.history.replaceState({}, document.title, window.location.pathname);
+        }
+    } catch (_) {}
+
     function draw(source, w, h) {
         const canvas = document.createElement('canvas');
         canvas.width = w; canvas.height = h;
@@ -130,13 +142,11 @@
         if (!files.front && !files.back && !files.full) { setError(null, imageError, 'Please add at least one photo.'); ok = false; }
         if (!ok) { loading(false); return; }
 
-        // Read email + company from URL first, then sessionStorage fallback
-        const urlParams = new URLSearchParams(window.location.search);
-        let email = urlParams.get('email') || '';
-        let companyVal = urlParams.get('company') || '';
+        // ✅ Read email + company ONLY from sessionStorage — no URL params
+        let email = '', companyVal = '';
         try {
-            if (!email) email = sessionStorage.getItem('gritty_email') || '';
-            if (!companyVal) companyVal = sessionStorage.getItem('gritty_company') || '';
+            email = sessionStorage.getItem('gritty_email') || '';
+            companyVal = sessionStorage.getItem('gritty_company') || '';
         } catch (_) {}
 
         const images = [];
