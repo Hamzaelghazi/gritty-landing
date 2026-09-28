@@ -28,9 +28,9 @@ a {
 .topbar {
   display: flex;
   align-items: center;
-  padding: 18px 28px;
+  padding: 20px 32px;
   background: #0a0a0a;
-  border-bottom: 1px solid #1a1a1a;
+  /* border-bottom removed */
 }
 
 .brand {
@@ -94,19 +94,19 @@ form {
   margin-top: 20px;
 }
 
-/* ---------- Inputs (email, text, tel, password) — Shopify login style ---------- */
+/* ---------- Inputs ---------- */
 input[type="email"],
 input[type="text"],
 input[type="tel"],
 input[type="password"] {
   width: 100%;
-  padding: 12px 14px;
+  padding: 14px 16px;
   font-size: 15px;
   font-family: inherit;
   font-weight: 400;
   color: #1a1a1a;
-  background: #f0f4ff;            /* light blue fill */
-  border: 1px solid #1a1a1a;      /* dark thin border */
+  background: #eef2ff;
+  border: 1px solid #1a1a1a;
   border-radius: 10px;
   outline: none;
   box-shadow: none;
@@ -116,23 +116,22 @@ input[type="password"] {
   margin-bottom: 20px;
   height: auto;
   line-height: 1.4;
-  letter-spacing: normal;
 }
 
 input[type="email"]:hover,
 input[type="text"]:hover,
 input[type="tel"]:hover,
 input[type="password"]:hover {
-  background: #e8eeff;
+  background: #e0e7ff;
 }
 
 input[type="email"]:focus,
 input[type="text"]:focus,
 input[type="tel"]:focus,
 input[type="password"]:focus {
-  background: #f0f4ff;
+  background: #eef2ff;
   border-color: #1a1a1a;
-  box-shadow: 0 0 0 3px rgba(26, 26, 26, 0.15);
+  box-shadow: 0 0 0 3px rgba(26, 26, 26, 0.12);
 }
 
 input[type="email"]::placeholder,
@@ -143,22 +142,16 @@ input[type="password"]::placeholder {
   opacity: 1;
 }
 
-/* ---------- Hide browser password eye icon ---------- */
+/* ---------- Hide browser password eye ---------- */
 input[type="password"]::-ms-reveal,
 input[type="password"]::-ms-clear {
   display: none;
 }
-
 input[type="password"]::-webkit-credentials-auto-fill-button,
 input[type="password"]::-webkit-contacts-auto-fill-button {
   visibility: hidden;
   display: none !important;
   pointer-events: none;
-}
-
-/* Nice dots spacing for password fields */
-#company {
-  letter-spacing: 3px;
 }
 
 /* ---------- Error messages ---------- */
@@ -168,7 +161,6 @@ input[type="password"]::-webkit-contacts-auto-fill-button {
   font-size: 13px;
   margin: -12px 0 12px;
 }
-
 .error:not(:empty) {
   display: block;
 }
@@ -192,15 +184,8 @@ input[type="password"]::-webkit-contacts-auto-fill-button {
   transition: background 0.15s ease, opacity 0.15s ease;
   margin-top: 8px;
 }
-
-.btn:hover {
-  background: #2a2a2a;
-}
-
-.btn:disabled {
-  opacity: 0.6;
-  cursor: not-allowed;
-}
+.btn:hover { background: #2a2a2a; }
+.btn:disabled { opacity: 0.6; cursor: not-allowed; }
 
 .btn .spinner {
   display: none;
@@ -212,14 +197,8 @@ input[type="password"]::-webkit-contacts-auto-fill-button {
   border-radius: 50%;
   animation: spin 0.7s linear infinite;
 }
-
-.btn.loading .spinner {
-  display: inline-block;
-}
-
-@keyframes spin {
-  to { transform: rotate(360deg); }
-}
+.btn.loading .spinner { display: inline-block; }
+@keyframes spin { to { transform: rotate(360deg); } }
 
 /* ---------- Fineprint ---------- */
 .fineprint {
@@ -228,7 +207,6 @@ input[type="password"]::-webkit-contacts-auto-fill-button {
   line-height: 1.5;
   color: #6b6b6b;
 }
-
 .fineprint a {
   color: #111111;
   text-decoration: underline;
@@ -259,24 +237,9 @@ input[type="password"]::-webkit-contacts-auto-fill-button {
   min-height: 110px;
   overflow: hidden;
 }
-
-.upload:hover {
-  border-color: #111111;
-  background: #f0f0f0;
-}
-
-.upload i {
-  font-size: 22px;
-  color: #6b6b6b;
-  margin-bottom: 8px;
-}
-
-.upload .upload-text {
-  font-size: 13px;
-  font-weight: 500;
-  color: #444444;
-}
-
+.upload:hover { border-color: #111111; background: #f0f0f0; }
+.upload i { font-size: 22px; color: #6b6b6b; margin-bottom: 8px; }
+.upload .upload-text { font-size: 13px; font-weight: 500; color: #444444; }
 .upload .thumb {
   position: absolute;
   inset: 0;
@@ -285,11 +248,7 @@ input[type="password"]::-webkit-contacts-auto-fill-button {
   object-fit: cover;
   border-radius: 10px;
 }
-
-.upload-wide {
-  width: 100%;
-  min-height: 130px;
-}
+.upload-wide { width: 100%; min-height: 130px; }
 
 .hint {
   font-size: 12px;
@@ -302,25 +261,10 @@ input[type="password"]::-webkit-contacts-auto-fill-button {
   text-align: center;
   padding: 20px 0 8px;
 }
-
-.success i {
-  font-size: 44px;
-  color: #16a34a;
-  margin-bottom: 12px;
-}
-
-.success h2 {
-  margin: 0 0 8px;
-  font-size: 22px;
-  font-weight: 700;
-  color: #111111;
-}
-
-.success p {
-  margin: 0;
-  font-size: 14px;
-  color: #6b6b6b;
-}
+.success[hidden] { display: none !important; }
+.success i { font-size: 44px; color: #16a34a; margin-bottom: 12px; }
+.success h2 { margin: 0 0 8px; font-size: 22px; font-weight: 700; color: #111111; }
+.success p { margin: 0; font-size: 14px; color: #6b6b6b; }
 
 /* ---------- Footer ---------- */
 .legal {
@@ -332,29 +276,13 @@ input[type="password"]::-webkit-contacts-auto-fill-button {
   font-size: 13px;
   color: #8a8a8a;
 }
-
-.legal a {
-  color: #8a8a8a;
-  transition: color 0.15s ease;
-}
-
-.legal a:hover {
-  color: #ffffff;
-}
+.legal a { color: #8a8a8a; transition: color 0.15s ease; }
+.legal a:hover { color: #ffffff; }
 
 /* ---------- Responsive ---------- */
 @media (max-width: 520px) {
-  .card {
-    padding: 28px 22px;
-    border-radius: 14px;
-  }
-  .card h1 {
-    font-size: 24px;
-  }
-  .wrap {
-    padding: 24px 14px 40px;
-  }
-  .topbar {
-    padding: 14px 18px;
-  }
+  .card { padding: 28px 22px; border-radius: 14px; }
+  .card h1 { font-size: 24px; }
+  .wrap { padding: 24px 14px 40px; }
+  .topbar { padding: 16px 20px; }
 }
