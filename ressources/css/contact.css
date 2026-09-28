@@ -286,3 +286,11 @@ input[type="password"]::-webkit-contacts-auto-fill-button {
   .wrap { padding: 24px 14px 40px; }
   .topbar { padding: 16px 20px; }
 }
+
+/* ---------- Mobile: center the logo in the topbar ---------- */
+@media (max-width: 600px) {
+  .topbar {
+    justify-content: center;
+    padding: 14px 20px;
+  }
+}
