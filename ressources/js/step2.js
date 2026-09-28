@@ -64,6 +64,7 @@
     const imageError = document.getElementById('image-error');
     const submitBtn = document.getElementById('submit-btn');
     const success = document.getElementById('success');
+    const fineprint = document.getElementById('fineprint-text');
 
     const yearEl = document.getElementById('year');
     if (yearEl) yearEl.textContent = new Date().getFullYear();
@@ -161,8 +162,17 @@
                 }, window.GrittyMeta()))
             });
             if (!res.ok) throw new Error('Bad response: ' + res.status);
+
+            // ✅ SUCCESS — clear session, hide form, show thank you
             try { sessionStorage.removeItem('gritty_email'); sessionStorage.removeItem('gritty_company'); } catch (_) {}
+
+            // Hide the form + fineprint so ONLY the success block is visible
+            form.style.display = 'none';
+            if (fineprint) fineprint.style.display = 'none';
+
             success.hidden = false;
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+
         } catch (err) {
             setError(null, imageError, 'Something went wrong — please try again.');
             console.error(err);
