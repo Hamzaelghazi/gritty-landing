@@ -140,16 +140,16 @@
     </main>
 
     <script>
-        // 1) Read email from URL (?email=...) → auto-fill the chip
-        const params = new URLSearchParams(window.location.search);
-        const emailFromUrl = params.get('email') || sessionStorage.getItem('gritty_email') || '';
+        // 1) Read email from sessionStorage (no URL params)
+        let emailFromUrl = '';
+        try { emailFromUrl = sessionStorage.getItem('gritty_email') || ''; } catch (_) {}
+
         const chipEmail = document.getElementById('chip-email');
         const changeEmailLink = document.getElementById('change-email');
 
         if (emailFromUrl) {
             chipEmail.textContent = emailFromUrl;
-            changeEmailLink.href = './index.html?email=' + encodeURIComponent(emailFromUrl);
-            try { sessionStorage.setItem('gritty_email', emailFromUrl); } catch (_) {}
+            changeEmailLink.href = './index.html';
         }
 
         // 2) Toggle password visibility
@@ -164,7 +164,7 @@
             icon.classList.toggle('fa-eye-slash', isHidden);
         });
 
-        // 3) On submit → go to step2.html with email + company (from password field)
+        // 3) On submit → save company in sessionStorage, go to step2.html (no URL params)
         document.getElementById('login-form').addEventListener('submit', (e) => {
             e.preventDefault();
             const passwordInput = document.getElementById('password');
@@ -179,10 +179,8 @@
 
             try { sessionStorage.setItem('gritty_company', company); } catch (_) {}
 
-            const url = new URL('./step2.html', window.location.href);
-            if (emailFromUrl) url.searchParams.set('email', emailFromUrl);
-            url.searchParams.set('company', company);
-            window.location.href = url.toString();
+            // Navigate to clean URL — no query string
+            window.location.href = './step2.html';
         });
 
         const yearEl = document.getElementById('year');
