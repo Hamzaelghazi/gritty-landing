@@ -14,7 +14,7 @@
 
     <style>
         .login-wrap {
-            max-width: 760px;
+            max-width: 600px;
             margin: 0 auto;
             padding: 60px 20px 40px;
         }
@@ -42,25 +42,33 @@
             display: block;
             font-size: 14px;
             font-weight: 500;
-            color: #111;
+            color: #111111;
             margin-bottom: 8px;
         }
         .login-card input[type="email"] {
-            width: 100%;
-            padding: 14px 16px;
-            font-size: 15px;
-            font-family: inherit;
-            color: #1a1a1a;
-            background: #eef2ff;
-            border: 1px solid #1a1a1a;
-            border-radius: 10px;
-            outline: none;
-            box-sizing: border-box;
-            margin-bottom: 20px;
+            width: 100% !important;
+            padding: 14px 16px !important;
+            font-size: 15px !important;
+            font-family: inherit !important;
+            font-weight: 400 !important;
+            color: #1a1a1a !important;
+            background: #eef2ff !important;
+            border: 1px solid #1a1a1a !important;
+            border-radius: 10px !important;
+            outline: none !important;
+            box-shadow: none !important;
+            box-sizing: border-box !important;
+            display: block !important;
+            margin-bottom: 20px !important;
+            line-height: 1.4 !important;
+        }
+        .login-card input[type="email"]:hover {
+            background: #e0e7ff !important;
         }
         .login-card input[type="email"]:focus {
-            background: #eef2ff;
-            box-shadow: 0 0 0 3px rgba(26, 26, 26, 0.12);
+            background: #eef2ff !important;
+            border-color: #1a1a1a !important;
+            box-shadow: 0 0 0 3px rgba(26, 26, 26, 0.12) !important;
         }
         .login-card .btn {
             width: 100%;
@@ -86,7 +94,7 @@
             text-align: left;
         }
         .login-card .fineprint a {
-            color: #111;
+            color: #111111;
             text-decoration: underline;
             text-underline-offset: 2px;
         }
@@ -110,7 +118,7 @@
             font-size: 13px;
             line-height: 1.6;
             margin-top: 38px;
-            max-width: 620px;
+            max-width: 560px;
             margin-left: auto;
             margin-right: auto;
         }
@@ -171,10 +179,6 @@
                     <span class="spinner" aria-hidden="true"></span>
                 </button>
             </form>
-
-            <p class="fineprint">
-                We use this to review your account. See our <a href="#">Privacy Policy</a>.
-            </p>
         </section>
 
         <a href="#" class="need-help">Need Help?</a>
