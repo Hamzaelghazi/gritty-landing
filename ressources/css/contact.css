@@ -43,6 +43,8 @@ a {
 
 .brand svg {
   display: block;
+  height: 28px;
+  width: auto;
 }
 
 /* ---------- Layout ---------- */
@@ -285,13 +287,10 @@ input[type="password"]::-webkit-contacts-auto-fill-button {
   .wrap { padding: 24px 14px 40px; }
 }
 
-/* ---------- Mobile: center + smaller logo ---------- */
+/* ---------- Mobile: center logo ---------- */
 @media (max-width: 600px) {
   .topbar {
     justify-content: center;
     padding: 18px 20px 24px;
-  }
-  .topbar .brand svg {
-    height: 28px;
   }
 }
