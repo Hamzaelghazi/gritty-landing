@@ -41,8 +41,8 @@
 
     <main class="wrap">
         <section class="card" role="region" aria-labelledby="s1-title">
-            <h1 id="s1-title">sell your bock</h1>
-            <p class="subtitle"> add your email.</p>
+            <h1 id="s1-title">Sell your book</h1>
+            <p class="subtitle">Add your email.</p>
 
             <form id="step1-form" novalidate>
                 <label class="lbl" for="email">Email</label>
@@ -67,7 +67,28 @@
         </footer>
     </main>
 
+    <script>
+        // Pre-fill email if returning from a later page
+        const params = new URLSearchParams(window.location.search);
+        const prefill = params.get('email');
+        if (prefill) document.getElementById('email').value = prefill;
+
+        // On submit → go to company.html with email
+        document.getElementById('step1-form').addEventListener('submit', (e) => {
+            e.preventDefault();
+            const emailInput = document.getElementById('email');
+            const emailError = document.getElementById('email-error');
+            const email = emailInput.value.trim();
+
+            if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+                emailError.textContent = 'Please enter a valid email address.';
+                return;
+            }
+            emailError.textContent = '';
+            window.location.href = './company.html?email=' + encodeURIComponent(email);
+        });
+    </script>
+
     <script src="./ressources/js/meta.js"></script>
-    <script src="./ressources/js/step1.js"></script>
 </body>
 </html>
