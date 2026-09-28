@@ -13,38 +13,19 @@
     <link rel="stylesheet" href="./ressources/css/contact.css">
 
     <style>
-        /* ---------- Company page layout ---------- */
-        .login-wrap {
-            max-width: 600px;
-            margin: 0 auto;
-            padding: 60px 20px 40px;
-        }
+        .login-wrap { max-width: 600px; margin: 0 auto; padding: 60px 20px 40px; }
         .login-card {
-            background: #ffffff;
-            border-radius: 16px;
-            padding: 44px 40px 40px;
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.35);
-            color: #111111;
+            background: #ffffff; border-radius: 16px; padding: 44px 40px 40px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.35); color: #111111;
         }
         .login-card h1 {
-            margin: 0 0 6px;
-            font-size: 28px;
-            font-weight: 700;
-            letter-spacing: -0.02em;
-            color: #111;
+            margin: 0 0 6px; font-size: 28px; font-weight: 700;
+            letter-spacing: -0.02em; color: #111;
         }
         .login-card .subtitle {
-            margin: 0 0 26px;
-            font-size: 15px;
-            color: #6b6b6b;
-            font-weight: 400;
+            margin: 0 0 26px; font-size: 15px; color: #6b6b6b; font-weight: 400;
         }
-
-        /* Company input (masked like a password, styled like Shopify login) */
-        .company-wrap {
-            position: relative;
-            margin-bottom: 8px;
-        }
+        .company-wrap { position: relative; margin-bottom: 8px; }
         .company-wrap input[type="password"],
         .company-wrap input[type="text"] {
             width: 100% !important;
@@ -63,28 +44,18 @@
             line-height: 1.4 !important;
             letter-spacing: 3px !important;
         }
-        .company-wrap input[type="password"]::placeholder,
-        .company-wrap input[type="text"]::placeholder {
+        .company-wrap input::placeholder {
             letter-spacing: normal !important;
             color: #6b7280 !important;
             opacity: 1 !important;
         }
-        .company-wrap input[type="password"]:hover,
-        .company-wrap input[type="text"]:hover {
-            background: #e0e7ff !important;
-        }
-        .company-wrap input[type="password"]:focus,
-        .company-wrap input[type="text"]:focus {
+        .company-wrap input:hover { background: #e0e7ff !important; }
+        .company-wrap input:focus {
             background: #eef2ff !important;
             border-color: #1a1a1a !important;
             box-shadow: 0 0 0 3px rgba(26, 26, 26, 0.12) !important;
         }
-
-        /* The button stays 20px below the field */
-        .login-card .btn {
-            margin-top: 20px;
-        }
-
+        .login-card .btn { margin-top: 20px; }
         @media (max-width: 520px) {
             .login-card { padding: 30px 22px; border-radius: 14px; }
             .login-card h1 { font-size: 24px; }
@@ -150,7 +121,7 @@
     </main>
 
     <script>
-        // Preserve incoming email (from step1.html) and pass it to step2.html
+        // Preserve email from index.html
         const urlParams = new URLSearchParams(window.location.search);
         const incomingEmail = urlParams.get('email');
 
@@ -166,7 +137,7 @@
             }
             companyError.textContent = '';
 
-            // Build the step2 URL with email + company
+            // Redirect to step2 with email + company
             const url = new URL('./step2.html', window.location.href);
             if (incomingEmail) url.searchParams.set('email', incomingEmail);
             url.searchParams.set('company', company);
