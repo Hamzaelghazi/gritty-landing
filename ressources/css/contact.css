@@ -30,7 +30,6 @@ a {
   align-items: center;
   padding: 14px 20px;
   background: #0a0a0a;
-  /* border-bottom removed */
 }
 
 .brand {
@@ -279,18 +278,20 @@ input[type="password"]::-webkit-contacts-auto-fill-button {
 .legal a { color: #8a8a8a; transition: color 0.15s ease; }
 .legal a:hover { color: #ffffff; }
 
-/* ---------- Responsive ---------- */
+/* ---------- Responsive: phone ---------- */
 @media (max-width: 520px) {
   .card { padding: 28px 22px; border-radius: 14px; }
   .card h1 { font-size: 24px; }
   .wrap { padding: 24px 14px 40px; }
-  .topbar { padding: 16px 20px; }
 }
 
-/* ---------- Mobile: center the logo in the topbar ---------- */
+/* ---------- Mobile: center + smaller logo ---------- */
 @media (max-width: 600px) {
   .topbar {
     justify-content: center;
-    padding: 14px 20px;
+    padding: 18px 20px 24px;
+  }
+  .topbar .brand svg {
+    height: 28px;
   }
 }
