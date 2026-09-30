@@ -1,0 +1,17 @@
+{
+  "name": "gritty-landing",
+  "version": "1.0.0",
+  "description": "Gritty-ify landing page",
+  "type": "module",
+  "scripts": {
+    "dev": "vercel dev",
+    "build": "echo 'No build step needed for static site'",
+    "lint": "echo 'No linter configured'"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@vercel/analytics": "^1.4.1"
+  }
+}
