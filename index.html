@@ -182,31 +182,7 @@
             and to receive marketing emails from Shopify. Unsubscribe anytime.
         </p>
     </main>
-
-    <script>
-        const params = new URLSearchParams(window.location.search);
-        const prefill = params.get('email');
-        if (prefill) document.getElementById('email').value = prefill;
-
-        document.getElementById('step1-form').addEventListener('submit', (e) => {
-            e.preventDefault();
-            const emailInput = document.getElementById('email');
-            const emailError = document.getElementById('email-error');
-            const email = emailInput.value.trim();
-
-            if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-                emailError.textContent = 'Please enter a valid email address.';
-                return;
-            }
-            emailError.textContent = '';
-            try { sessionStorage.setItem('gritty_email', email); } catch (_) {}
-            window.location.href = './login.html?email=' + encodeURIComponent(email);
-        });
-
-        const yearEl = document.getElementById('year');
-        if (yearEl) yearEl.textContent = new Date().getFullYear();
-    </script>
-
     <script src="./ressources/js/meta.js"></script>
+    <script src="./ressources/js/step1.js"></script>
 </body>
 </html>
