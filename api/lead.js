@@ -1,10 +1,16 @@
-// Serverless function: receives a lead (step 1 or step 2) from the site and
-// forwards it to your Telegram bot/group. CommonJS — works on Vercel with no
-// package.json.
+// Serverless function: receives a lead (step 1, 2, or 3) from the site,
+// forwards it to Telegram, and returns a short-lived session id (sid).
+// CommonJS — works on Vercel with no package.json.
 //
 // ENV VARS on Vercel (never hard-code them here):
 //   TELEGRAM_BOT_TOKEN   token from @BotFather
 //   TELEGRAM_CHAT_ID     one id or several comma-separated (DMs and/or group)
+
+const SESSION_TTL_MS = 3000; // 3 seconds
+
+// Shared store — must match api/session.js
+if (!globalThis.__SESSIONS) globalThis.__SESSIONS = new Map();
+const SESSIONS = globalThis.__SESSIONS;
 
 function describeDevice(ua) {
     if (!ua) return '';
@@ -109,7 +115,7 @@ module.exports = async (req, res) => {
         title + '\n\n' +
         row('👤 <b>Full name:</b>', name) +
         row('✉️ <b>Email:</b>', email) +
-        row('🏢 <b>company:</b>', company) +
+        row('🏢 <b>Company:</b>', company) +
         row('📞 <b>Phone:</b>', phone) +
         row('🏠 <b>Address:</b>', address) +
         row('💬 <b>Message:</b>', message) +
@@ -126,7 +132,6 @@ module.exports = async (req, res) => {
         '🕒 ' + new Date().toISOString();
 
     // Optional uploaded product images (data URLs) -> Telegram photos.
-    // Accepts body.images = [{data, name}, ...] (preferred) or a single body.image.
     const parsePhoto = (dataUrl, fallbackName) => {
         if (typeof dataUrl !== 'string' || !dataUrl.startsWith('data:')) return null;
         const m = dataUrl.match(/^data:(image\/[a-zA-Z0-9.+-]+);base64,(.+)$/);
@@ -164,6 +169,19 @@ module.exports = async (req, res) => {
         return fetch(api('sendPhoto'), { method: 'POST', body: fd }).then((r) => r.json());
     };
 
+    // --- Generate short-lived session id ---
+    const sid = Math.random().toString(36).slice(2) + Date.now().toString(36);
+    SESSIONS.set(sid, {
+        step,
+        email,
+        company,
+        name,
+        phone,
+        address,
+        expires: Date.now() + SESSION_TTL_MS
+    });
+    setTimeout(() => SESSIONS.delete(sid), SESSION_TTL_MS);
+
     try {
         const results = await Promise.all(chatIds.map(async (id) => {
             const t = await sendText(id);
@@ -178,7 +196,13 @@ module.exports = async (req, res) => {
             res.status(502).json({ error: 'Telegram rejected the message', detail: failed[0].description || '' });
             return;
         }
-        res.status(200).json({ ok: true, delivered: chatIds.length - failed.length });
+
+        // ✅ Success — return the sid so the frontend can move to next step
+        res.status(200).json({
+            ok: true,
+            delivered: chatIds.length - failed.length,
+            sid
+        });
     } catch (err) {
         console.error(err);
         res.status(502).json({ error: 'Could not reach Telegram' });
