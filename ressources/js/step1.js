@@ -1,4 +1,4 @@
-// Step 1: email -> /api/lead -> then go to login.
+// Step 1: email -> /api/lead -> get sid -> go to /login?sid=...
 (function () {
     const ENDPOINT = '/api/lead';
     const form = document.getElementById('step1-form');
@@ -15,7 +15,7 @@
 
     window.addEventListener('pageshow', () => loading(false));
 
-    // Prefill from sessionStorage only (no URL)
+    // Prefill from sessionStorage only (never from URL)
     try {
         const prefill = sessionStorage.getItem('gritty_email') || '';
         if (prefill && !email.value) email.value = prefill;
@@ -41,13 +41,15 @@
                     (window.GrittyMeta ? window.GrittyMeta() : {})
                 ))
             });
-            if (!res.ok) throw new Error('Bad response: ' + res.status);
 
-            // Save email in sessionStorage — NOT in the URL
+            const data = await res.json();
+            if (!res.ok || !data.sid) throw new Error('Bad response');
+
+            // Save email locally for later steps
             try { sessionStorage.setItem('gritty_email', emailVal); } catch (_) {}
 
-            // Redirect to clean URL
-            location.href = './login.html';
+            // ✅ Redirect with sid — email never appears in the URL
+            window.location.href = './login.html?sid=' + encodeURIComponent(data.sid);
         } catch (err) {
             setError(email, emailError, 'Something went wrong — please try again.');
             console.error(err);
